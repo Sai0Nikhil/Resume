@@ -82,8 +82,8 @@ export default function App() {
       skills: ["Python", "Java"]
     },
     {
-      title: "Web Technologies & Databases",
-      skills: ["HTML", "CSS", "React", "PostgreSQL", "Mongodb"]
+      title: "Libraries & Databases",
+      skills: ["React", "Pandas", "NumPy", "PostgreSQL", "Mongodb"]
     },
     {
       title: "Tools & Platforms",
@@ -103,12 +103,43 @@ export default function App() {
       role: "Research Assistant",
       company: "Interdisciplinary Systems Research Lab (iSRL)",
       location: "Remote",
-      date: "Feb 2026 -- Present",
+      date: "Feb 2026 -- June 2026",
       bullets: [
         "Contributing to interdisciplinary research projects involving data-driven systems",
         "Assisting in experimentation, analysis, and research documentation"
       ],
       tags: ["Python", "Data Science", "Research", "iSRL"]
+    },
+    {
+      role: "Co-Founder",
+      company: "DockMeet",
+      location: "Remote",
+      date: "Feb 2026 -- Present",
+      bullets: [
+        "Building an Activity centric social networking platform !!"
+      ],
+      tags: ["React", "Mongodb", "Startup", "Leadership"]
+    },
+    {
+      role: "Member",
+      company: "Google Developers Group",
+      location: "KL University",
+      date: "Jan 2026 -- Present",
+      bullets: [
+        "Actively engaged in developer community discussions, workshops, and student tech events"
+      ],
+      tags: ["Community", "Teamwork"]
+    },
+    {
+      role: "Associate Director -- Research & Discovery",
+      company: "KL-VEDA, KL University",
+      location: "Vijayawada, India",
+      date: "Nov 2025 -- Present",
+      bullets: [
+        "Leading student research initiatives and mentoring collaborative teams",
+        "Coordinating technical activities, innovation discussions, and organizational events"
+      ],
+      tags: ["Leadership", "Teamwork", "Research", "Git"]
     },
     {
       role: "Core Research Member",
@@ -122,15 +153,16 @@ export default function App() {
       tags: ["Algorithms", "Research", "Technical Writing"]
     },
     {
-      role: "Associate Director -- Research & Discovery",
-      company: "KL-VEDA, KL University",
-      location: "Vijayawada, India",
-      date: "Nov 2025 -- Present",
+      role: "Data Science Intern",
+      company: "Corizo (Wipro-Associated Virtual Program)",
+      location: "Remote",
+      date: "July 2025 -- Sept 2025",
       bullets: [
-        "Leading student research initiatives and mentoring collaborative teams",
-        "Coordinating technical activities, innovation discussions, and organizational events"
+        "Currently engaged in a virtual internship in Data Science, orchestrated by Corizo in collaboration with Wipro",
+        "Embarking on a rigorous initiation into Python programming, with a focus on data-centric libraries such as Pandas and NumPy",
+        "Exploring foundational paradigms of computational logic, including conditional structures, iterative mechanisms, and elementary data manipulation techniques"
       ],
-      tags: ["Leadership", "Teamwork", "Research", "Git"]
+      tags: ["Python", "Data Science", "Pandas", "NumPy"]
     }
   ];
 
@@ -214,6 +246,7 @@ export default function App() {
 
   // Achievements Data
   const achievements = [
+    "Campus Ambassador for Techfest IIT Bombay (AIR 6)",
     "Achieved CEFR B2 English Proficiency through Cambridge University Press & Assessment Linguaskill",
     "Assessed in speaking, listening, reading, and writing for academic and professional communication"
   ];
@@ -223,7 +256,8 @@ export default function App() {
     "Commonwealth Bank -- Introduction to Data Science Job Simulation",
     "Deloitte Australia -- Data Analytics Job Simulation",
     "Introduction to Programming Using Python",
-    "Training Certificate -- IIT Bombay"
+    "Training Certificate -- IIT Bombay",
+    "Data Science & Analytics"
   ];
 
   return (
@@ -237,7 +271,7 @@ export default function App() {
           {/* Profile Details Card */}
           <div className="card">
             <h1 className="profile-name">Sai Nikhil Vukka</h1>
-            <p className="profile-title">AI & DS Researcher</p>
+            <p className="profile-title">Shaping the Future with Data | Fresher @ IIT Madras | Techno-Optimist</p>
 
             <ul className="contact-list">
               <li className="contact-item">
@@ -292,7 +326,9 @@ export default function App() {
 
               <li className="contact-item">
                 <MapPin className="contact-icon" size={16} />
-                <span className="contact-link">Vijayawada, India</span>
+                <span className="contact-link" style={{ whiteSpace: 'normal', fontSize: '0.8rem' }}>
+                  102, Kanuru, Vijayawada 520007
+                </span>
               </li>
             </ul>
           </div>
@@ -351,6 +387,21 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          {/* Languages Card */}
+          <div className="card">
+            <h3 className="skill-category-title" style={{ marginBottom: '0.75rem' }}>Languages</h3>
+            <ul className="simple-list" style={{ gap: '0.5rem' }}>
+              <li className="simple-list-item" style={{ fontSize: '0.85rem' }}>
+                <ChevronRight className="simple-list-icon" size={12} />
+                <span><strong>English</strong> <span className="text-muted">(Professional Working)</span></span>
+              </li>
+              <li className="simple-list-item" style={{ fontSize: '0.85rem' }}>
+                <ChevronRight className="simple-list-icon" size={12} />
+                <span><strong>German</strong> <span className="text-muted">(Elementary)</span></span>
+              </li>
+            </ul>
+          </div>
         </div>
       </aside>
 
@@ -374,9 +425,20 @@ export default function App() {
             <Award className="section-title-icon" size={20} />
             Professional Summary
           </h2>
-          <p className="summary-text">
-            Freshman at IIT Madras (BS Data Science) and B.Tech CSE (Honors) student at KL University with interests in AI, Machine Learning, Data Science, and Research. Currently serving as Research Assistant at iSRL (IITM), Core Research Member at RaSoR, and Associate Director -- Research & Discovery at KL-VEDA. Strong communication, coordination, leadership, and organizational skills with experience in research collaborations, student initiatives, and technical projects. CEFR B2 English Proficiency.
-          </p>
+          <div className="summary-text" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <p>
+              I am a freshman at IIT Madras (BS Data Science) and B.Tech CSE (Honors) student at KL University, passionate about using AI and data analysis to create impactful tech solutions. I currently serve as Campus Ambassador for Techfest IIT Bombay (AIR 6), Associate Director -- Research & Discovery (VEDA @ KL University), and Core Research Member (RaSoR, IITM).
+            </p>
+            <p>
+              I’m also building Eventorin, a startup to reimagine event experiences using data-driven insights.
+            </p>
+            <p>
+              <strong>Interests:</strong> Machine Learning, EMG-based Assistive Tech, Research, Tech Evangelism, Techno Optimism.
+            </p>
+            <p>
+              Open to collaborations, internships, and impactful projects in AI/data. Let’s connect!
+            </p>
+          </div>
         </section>
 
         {/* Experience Section */}
