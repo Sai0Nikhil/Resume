@@ -150,7 +150,7 @@ const DEFAULT_RESUME_DATA = {
     {
       institution: "Indian Institute of Technology Madras",
       date: "2025 -- 2029",
-      degree: "Bachelor of Science in Data Science and Applications",
+      degree: "Bachelor of Science in Data Science and Applications (Foundation level completed)",
       location: "Chennai, India",
       tags: ["Python", "Data Science"]
     },
@@ -229,6 +229,25 @@ export default function App() {
   const [jsonError, setJsonError] = useState(null);
   const [authError, setAuthError] = useState(false);
 
+  // Fetch resume data from MongoDB API on component mount
+  useEffect(() => {
+    const fetchResumeData = async () => {
+      try {
+        const response = await fetch('/api/resume');
+        if (!response.ok) {
+          throw new Error('Failed to fetch resume data from serverless API');
+        }
+        const data = await response.json();
+        setResumeData(data);
+        // Sync local cache
+        localStorage.setItem('resume_data', JSON.stringify(data));
+      } catch (error) {
+        console.warn("Could not fetch from MongoDB, falling back to local data:", error);
+      }
+    };
+    fetchResumeData();
+  }, []);
+
   // Update theme on document root
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -286,13 +305,31 @@ export default function App() {
     }
   };
 
-  // Admin Update
-  const handleSaveData = () => {
+  // Admin Update (Saves locally and pushes to MongoDB API)
+  const handleSaveData = async () => {
     try {
       const parsedData = JSON.parse(jsonInput);
       if (!parsedData.profile || !parsedData.summary) {
         throw new Error("Missing profile or summary section.");
       }
+
+      // Attempt to post to MongoDB serverless function
+      const response = await fetch('/api/resume', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          passkey: 'Sainikhil@1',
+          data: parsedData
+        })
+      });
+
+      if (!response.ok) {
+        const errResult = await response.json();
+        throw new Error(errResult.error || 'Failed to update remote database');
+      }
+
       setResumeData(parsedData);
       localStorage.setItem('resume_data', JSON.stringify(parsedData));
       setJsonError(null);
@@ -300,18 +337,38 @@ export default function App() {
       setIsAuthorized(false);
       setPasskeyInput("");
     } catch (err) {
-      setJsonError("Invalid JSON: " + err.message);
+      setJsonError("Error: " + err.message);
     }
   };
 
-  // Admin Reset
-  const handleResetData = () => {
+  // Admin Reset (Clears local storage and defaults back)
+  const handleResetData = async () => {
     if (window.confirm("Are you sure you want to reset to the original default CV details?")) {
-      setResumeData(DEFAULT_RESUME_DATA);
-      localStorage.removeItem('resume_data');
-      setIsAdminModalOpen(false);
-      setIsAuthorized(false);
-      setPasskeyInput("");
+      try {
+        const response = await fetch('/api/resume', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            passkey: 'Sainikhil@1',
+            data: DEFAULT_RESUME_DATA
+          })
+        });
+
+        if (!response.ok) {
+          const errResult = await response.json();
+          throw new Error(errResult.error || 'Failed to reset database record');
+        }
+
+        setResumeData(DEFAULT_RESUME_DATA);
+        localStorage.removeItem('resume_data');
+        setIsAdminModalOpen(false);
+        setIsAuthorized(false);
+        setPasskeyInput("");
+      } catch (err) {
+        setJsonError("Error: " + err.message);
+      }
     }
   };
 
@@ -458,7 +515,6 @@ export default function App() {
           {resumeData.languages && resumeData.languages.length > 0 && (
             <div className="card languages-card">
               <h3 className="skill-category-title" style={{ marginBottom: '0.75rem' }}>Languages</h3>
-
               <ul className="simple-list" style={{ gap: '0.5rem' }}>
                 {resumeData.languages.map((lang, index) => (
                   <li key={index} className="simple-list-item" style={{ fontSize: '0.85rem' }}>
