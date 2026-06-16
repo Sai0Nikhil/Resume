@@ -14,7 +14,9 @@ import {
   FolderGit2, 
   BookOpen, 
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  Lock,
+  X
 } from 'lucide-react';
 import Avatar from './Avatar';
 
@@ -38,67 +40,18 @@ const LinkedinIcon = ({ size = 16, className = "" }) => (
   </svg>
 );
 
-
-export default function App() {
-  // Theme state
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('theme') || 'dark';
-  });
-
-  // Highlight/Filter state
-  const [selectedSkill, setSelectedSkill] = useState(null);
-
-  // Copy indicator state
-  const [copiedField, setCopiedField] = useState(null);
-
-  // Update theme on document root
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  // Toggle theme helper
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
-  };
-
-  // Copy to clipboard helper
-  const copyToClipboard = (text, field) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedField(field);
-      setTimeout(() => setCopiedField(null), 1500);
-    });
-  };
-
-  // Print function
-  const handlePrint = () => {
-    window.print();
-  };
-
-  // Skill groupings
-  const skillCategories = [
-    {
-      title: "Programming Languages",
-      skills: ["Python", "Java"]
-    },
-    {
-      title: "Libraries & Databases",
-      skills: ["React", "Pandas", "NumPy", "PostgreSQL", "Mongodb"]
-    },
-    {
-      title: "Tools & Platforms",
-      skills: ["Git", "Postman", "Render", "MS Office"]
-    }
-  ];
-
-  // Helper to check if item is highlighted
-  const isHighlighted = (itemTags = []) => {
-    if (!selectedSkill) return false;
-    return itemTags.some(tag => tag.toLowerCase() === selectedSkill.toLowerCase());
-  };
-
-  // Experience Data
-  const experiences = [
+// Hardcoded default fallback resume details
+const DEFAULT_RESUME_DATA = {
+  profile: {
+    name: "Sai Nikhil Vukka",
+    title: "Shaping the Future with Data | Fresher @ IIT Madras | Techno-Optimist",
+    email: "25f2005507@ds.study.iitm.ac.in",
+    phone: "+91 9381480420",
+    linkedin: "https://www.linkedin.com/in/sai-nikhil-vukka-iitm",
+    address: "102, Kanuru, Vijayawada 520007"
+  },
+  summary: "Freshman at IIT Madras (BS Data Science) and B.Tech CSE (Honors) student at KL University with interests in AI, Machine Learning, Data Science, and Research. Currently serving as Research Assistant at iSRL (IITM), Core Research Member at RaSoR, and Associate Director -- Research & Discovery at KL-VEDA. Strong communication, coordination, leadership, and organizational skills with experience in research collaborations, student initiatives, and technical projects, CEFR B2 English Proficiency.",
+  experiences: [
     {
       role: "Research Assistant",
       company: "Interdisciplinary Systems Research Lab (iSRL)",
@@ -152,11 +105,8 @@ export default function App() {
       ],
       tags: ["React", "Mongodb", "Startup", "Leadership"]
     }
-  ];
-
-
-  // Projects Data
-  const projects = [
+  ],
+  projects: [
     {
       title: "Nurve2Voice -- IoT Based Solution for Mute Individuals",
       date: "2025 -- Present",
@@ -181,10 +131,8 @@ export default function App() {
       ],
       tags: ["Face Recognition", "AI", "Python", "PostgreSQL", "Render"]
     }
-  ];
-
-  // Publications Data
-  const publications = [
+  ],
+  publications: [
     {
       title: "Regulatory Delta of Food Labelling Laws in India",
       date: "2026",
@@ -197,10 +145,8 @@ export default function App() {
       ],
       tags: ["Research", "iSRL"]
     }
-  ];
-
-  // Education Data
-  const education = [
+  ],
+  education: [
     {
       institution: "Indian Institute of Technology Madras",
       date: "2025 -- 2029",
@@ -231,23 +177,154 @@ export default function App() {
       gpa: "95%",
       tags: []
     }
-  ];
-
-  // Achievements Data
-  const achievements = [
+  ],
+  achievements: [
     "Campus Ambassador for Techfest IIT Bombay (AIR 6)",
     "Achieved CEFR B2 English Proficiency through Cambridge University Press & Assessment Linguaskill",
     "Assessed in speaking, listening, reading, and writing for academic and professional communication"
-  ];
-
-  // Certifications Data
-  const certifications = [
+  ],
+  certifications: [
     "Commonwealth Bank -- Introduction to Data Science Job Simulation",
     "Deloitte Australia -- Data Analytics Job Simulation",
     "Introduction to Programming Using Python",
     "Training Certificate -- IIT Bombay",
     "Data Science & Analytics"
+  ],
+  languages: [
+    { name: "English", level: "Professional Working" },
+    { name: "German", level: "Elementary" }
+  ]
+};
+
+export default function App() {
+  // Theme state
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'dark';
+  });
+
+  // Highlight/Filter state
+  const [selectedSkill, setSelectedSkill] = useState(null);
+
+  // Copy indicator state
+  const [copiedField, setCopiedField] = useState(null);
+
+  // Resume Data state loaded from localStorage or default configuration
+  const [resumeData, setResumeData] = useState(() => {
+    const saved = localStorage.getItem('resume_data');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Failed to parse saved resume data, using default.", e);
+      }
+    }
+    return DEFAULT_RESUME_DATA;
+  });
+
+  // Admin Modal states
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [passkeyInput, setPasskeyInput] = useState("");
+  const [jsonInput, setJsonInput] = useState("");
+  const [jsonError, setJsonError] = useState(null);
+  const [authError, setAuthError] = useState(false);
+
+  // Update theme on document root
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  // Toggle theme helper
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
+
+  // Copy to clipboard helper
+  const copyToClipboard = (text, field) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 1500);
+    });
+  };
+
+  // Print function
+  const handlePrint = () => {
+    window.print();
+  };
+
+  // Skill groupings
+  const skillCategories = [
+    {
+      title: "Programming Languages",
+      skills: ["Python", "Java"]
+    },
+    {
+      title: "Libraries & Databases",
+      skills: ["React", "Pandas", "NumPy", "PostgreSQL", "Mongodb"]
+    },
+    {
+      title: "Tools & Platforms",
+      skills: ["Git", "Postman", "Render", "MS Office"]
+    }
   ];
+
+  // Helper to check if item is highlighted
+  const isHighlighted = (itemTags = []) => {
+    if (!selectedSkill) return false;
+    return itemTags.some(tag => tag.toLowerCase() === selectedSkill.toLowerCase());
+  };
+
+  // Admin Verification
+  const handleVerifyPasskey = () => {
+    if (passkeyInput === 'Sainikhil@1') {
+      setIsAuthorized(true);
+      setJsonInput(JSON.stringify(resumeData, null, 2));
+      setAuthError(false);
+    } else {
+      setAuthError(true);
+    }
+  };
+
+  // Admin Update
+  const handleSaveData = () => {
+    try {
+      const parsedData = JSON.parse(jsonInput);
+      if (!parsedData.profile || !parsedData.summary) {
+        throw new Error("Missing profile or summary section.");
+      }
+      setResumeData(parsedData);
+      localStorage.setItem('resume_data', JSON.stringify(parsedData));
+      setJsonError(null);
+      setIsAdminModalOpen(false);
+      setIsAuthorized(false);
+      setPasskeyInput("");
+    } catch (err) {
+      setJsonError("Invalid JSON: " + err.message);
+    }
+  };
+
+  // Admin Reset
+  const handleResetData = () => {
+    if (window.confirm("Are you sure you want to reset to the original default CV details?")) {
+      setResumeData(DEFAULT_RESUME_DATA);
+      localStorage.removeItem('resume_data');
+      setIsAdminModalOpen(false);
+      setIsAuthorized(false);
+      setPasskeyInput("");
+    }
+  };
+
+  // Admin Export
+  const handleExportData = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(resumeData, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "resume_config.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
 
   return (
     <div className="app-container">
@@ -259,17 +336,17 @@ export default function App() {
 
           {/* Profile Details Card */}
           <div className="card">
-            <h1 className="profile-name">Sai Nikhil Vukka</h1>
-            <p className="profile-title">Shaping the Future with Data | Fresher @ IIT Madras | Techno-Optimist</p>
+            <h1 className="profile-name">{resumeData.profile.name}</h1>
+            <p className="profile-title">{resumeData.profile.title}</p>
 
             <ul className="contact-list">
               <li className="contact-item">
                 <Mail className="contact-icon" size={16} />
-                <a href="mailto:25f2005507@ds.study.iitm.ac.in" className="contact-link">
-                  25f2005507@ds.study.iitm.ac.in
+                <a href={`mailto:${resumeData.profile.email}`} className="contact-link">
+                  {resumeData.profile.email}
                 </a>
                 <button 
-                  onClick={() => copyToClipboard('25f2005507@ds.study.iitm.ac.in', 'email')}
+                  onClick={() => copyToClipboard(resumeData.profile.email, 'email')}
                   className="copy-btn"
                   title="Copy Email"
                 >
@@ -280,11 +357,11 @@ export default function App() {
 
               <li className="contact-item">
                 <Phone className="contact-icon" size={16} />
-                <a href="tel:+919381480420" className="contact-link">
-                  +91 9381480420
+                <a href={`tel:${resumeData.profile.phone}`} className="contact-link">
+                  {resumeData.profile.phone}
                 </a>
                 <button 
-                  onClick={() => copyToClipboard('+919381480420', 'phone')}
+                  onClick={() => copyToClipboard(resumeData.profile.phone, 'phone')}
                   className="copy-btn"
                   title="Copy Phone"
                 >
@@ -296,15 +373,15 @@ export default function App() {
               <li className="contact-item">
                 <LinkedinIcon className="contact-icon" size={16} />
                 <a 
-                  href="https://www.linkedin.com/in/sai-nikhil-vukka-iitm" 
+                  href={resumeData.profile.linkedin} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="contact-link"
                 >
-                  linkedin.com/in/sai-nikhil-vukka-iitm
+                  {resumeData.profile.linkedin.replace("https://www.", "")}
                 </a>
                 <button 
-                  onClick={() => copyToClipboard('https://www.linkedin.com/in/sai-nikhil-vukka-iitm', 'linkedin')}
+                  onClick={() => copyToClipboard(resumeData.profile.linkedin, 'linkedin')}
                   className="copy-btn"
                   title="Copy LinkedIn URL"
                 >
@@ -316,7 +393,7 @@ export default function App() {
               <li className="contact-item">
                 <MapPin className="contact-icon" size={16} />
                 <span className="contact-link" style={{ whiteSpace: 'normal', fontSize: '0.8rem' }}>
-                  102, Kanuru, Vijayawada 520007
+                  {resumeData.profile.address}
                 </span>
               </li>
             </ul>
@@ -378,19 +455,19 @@ export default function App() {
           </div>
 
           {/* Languages Card */}
-          <div className="card">
-            <h3 className="skill-category-title" style={{ marginBottom: '0.75rem' }}>Languages</h3>
-            <ul className="simple-list" style={{ gap: '0.5rem' }}>
-              <li className="simple-list-item" style={{ fontSize: '0.85rem' }}>
-                <ChevronRight className="simple-list-icon" size={12} />
-                <span><strong>English</strong> <span className="text-muted">(Professional Working)</span></span>
-              </li>
-              <li className="simple-list-item" style={{ fontSize: '0.85rem' }}>
-                <ChevronRight className="simple-list-icon" size={12} />
-                <span><strong>German</strong> <span className="text-muted">(Elementary)</span></span>
-              </li>
-            </ul>
-          </div>
+          {resumeData.languages && resumeData.languages.length > 0 && (
+            <div className="card">
+              <h3 className="skill-category-title" style={{ marginBottom: '0.75rem' }}>Languages</h3>
+              <ul className="simple-list" style={{ gap: '0.5rem' }}>
+                {resumeData.languages.map((lang, index) => (
+                  <li key={index} className="simple-list-item" style={{ fontSize: '0.85rem' }}>
+                    <ChevronRight className="simple-list-icon" size={12} />
+                    <span><strong>{lang.name}</strong> <span className="text-muted">({lang.level})</span></span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </aside>
 
@@ -415,182 +492,273 @@ export default function App() {
             Professional Summary
           </h2>
           <p className="summary-text">
-            Freshman at IIT Madras (BS Data Science) and B.Tech CSE (Honors) student at KL University with interests in AI, Machine Learning, Data Science, and Research. Currently serving as Research Assistant at iSRL (IITM), Core Research Member at RaSoR, and Associate Director -- Research & Discovery at KL-VEDA. Strong communication, coordination, leadership, and organizational skills with experience in research collaborations, student initiatives, and technical projects, CEFR B2 English Proficiency.
+            {resumeData.summary}
           </p>
         </section>
 
-
         {/* Experience Section */}
-        <section className="card">
-          <h2 className="section-title">
-            <Briefcase className="section-title-icon" size={20} />
-            Professional Experience
-          </h2>
-          <div className="timeline">
-            {experiences.map((exp, index) => {
-              const highlighted = isHighlighted(exp.tags);
-              return (
-                <div key={index} className={`timeline-item ${highlighted ? 'highlighted' : ''}`}>
-                  <div className="timeline-dot" />
-                  <div className="timeline-header">
-                    <h3 className="timeline-title">{exp.role}</h3>
-                    <span className="timeline-date">{exp.date}</span>
+        {resumeData.experiences && resumeData.experiences.length > 0 && (
+          <section className="card">
+            <h2 className="section-title">
+              <Briefcase className="section-title-icon" size={20} />
+              Professional Experience
+            </h2>
+            <div className="timeline">
+              {resumeData.experiences.map((exp, index) => {
+                const highlighted = isHighlighted(exp.tags);
+                return (
+                  <div key={index} className={`timeline-item ${highlighted ? 'highlighted' : ''}`}>
+                    <div className="timeline-dot" />
+                    <div className="timeline-header">
+                      <h3 className="timeline-title">{exp.role}</h3>
+                      <span className="timeline-date">{exp.date}</span>
+                    </div>
+                    <div className="timeline-subtitle">
+                      {exp.company} &bull; {exp.location}
+                    </div>
+                    <ul className="timeline-bullets">
+                      {exp.bullets.map((bullet, bIndex) => (
+                        <li key={bIndex} className="timeline-bullet">{bullet}</li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="timeline-subtitle">
-                    {exp.company} &bull; {exp.location}
-                  </div>
-                  <ul className="timeline-bullets">
-                    {exp.bullets.map((bullet, bIndex) => (
-                      <li key={bIndex} className="timeline-bullet">{bullet}</li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Projects Section */}
-        <section className="card">
-          <h2 className="section-title">
-            <FolderGit2 className="section-title-icon" size={20} />
-            Key Projects
-          </h2>
-          <div className="projects-grid">
-            {projects.map((project, index) => {
-              const highlighted = isHighlighted(project.tags);
-              return (
-                <div key={index} className={`project-card ${highlighted ? 'highlighted' : ''}`}>
-                  <div className="project-header">
-                    <h3 className="project-title">{project.title}</h3>
-                    <span className="project-type">{project.type}</span>
+        {resumeData.projects && resumeData.projects.length > 0 && (
+          <section className="card">
+            <h2 className="section-title">
+              <FolderGit2 className="section-title-icon" size={20} />
+              Key Projects
+            </h2>
+            <div className="projects-grid">
+              {resumeData.projects.map((project, index) => {
+                const highlighted = isHighlighted(project.tags);
+                return (
+                  <div key={index} className={`project-card ${highlighted ? 'highlighted' : ''}`}>
+                    <div className="project-header">
+                      <h3 className="project-title">{project.title}</h3>
+                      <span className="project-type">{project.type}</span>
+                    </div>
+                    <div className="project-date">{project.date}</div>
+                    <div className="project-role">{project.role}</div>
+                    <ul className="timeline-bullets" style={{ marginBottom: '0.75rem' }}>
+                      {project.bullets.map((bullet, bIndex) => (
+                        <li key={bIndex} className="timeline-bullet">{bullet}</li>
+                      ))}
+                    </ul>
+                    <div className="project-tags">
+                      {project.tags.map((tag, tIndex) => (
+                        <span 
+                          key={tIndex} 
+                          onClick={() => setSelectedSkill(prev => prev === tag ? null : tag)}
+                          className={`project-tag ${selectedSkill === tag ? 'active' : ''}`}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="project-date">{project.date}</div>
-                  <div className="project-role">{project.role}</div>
-                  <ul className="timeline-bullets" style={{ marginBottom: '0.75rem' }}>
-                    {project.bullets.map((bullet, bIndex) => (
-                      <li key={bIndex} className="timeline-bullet">{bullet}</li>
-                    ))}
-                  </ul>
-                  <div className="project-tags">
-                    {project.tags.map((tag, tIndex) => (
-                      <span 
-                        key={tIndex} 
-                        onClick={() => setSelectedSkill(prev => prev === tag ? null : tag)}
-                        className={`project-tag ${selectedSkill === tag ? 'active' : ''}`}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Publications Section */}
-        <section className="card">
-          <h2 className="section-title">
-            <BookOpen className="section-title-icon" size={20} />
-            Publications
-          </h2>
-          <div className="timeline">
-            {publications.map((pub, index) => {
-              const highlighted = isHighlighted(pub.tags);
-              return (
-                <div key={index} className={`timeline-item ${highlighted ? 'highlighted' : ''}`}>
-                  <div className="timeline-dot" />
-                  <div className="timeline-header">
-                    <h3 className="timeline-title">{pub.title}</h3>
-                    <span className="timeline-date">{pub.date}</span>
+        {resumeData.publications && resumeData.publications.length > 0 && (
+          <section className="card">
+            <h2 className="section-title">
+              <BookOpen className="section-title-icon" size={20} />
+              Publications
+            </h2>
+            <div className="timeline">
+              {resumeData.publications.map((pub, index) => {
+                const highlighted = isHighlighted(pub.tags);
+                return (
+                  <div key={index} className={`timeline-item ${highlighted ? 'highlighted' : ''}`}>
+                    <div className="timeline-dot" />
+                    <div className="timeline-header">
+                      <h3 className="timeline-title">{pub.title}</h3>
+                      <span className="timeline-date">{pub.date}</span>
+                    </div>
+                    <div className="timeline-subtitle">
+                      Publisher: {pub.publisher} &bull;{' '}
+                      <a 
+                        href={pub.doiLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="publication-doi inline-flex items-center gap-1"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <span>Zenodo DOI: {pub.doi}</span>
+                        <ExternalLink size={12} style={{ display: 'inline' }} />
+                      </a>
+                    </div>
+                    <ul className="timeline-bullets">
+                      {pub.bullets.map((bullet, bIndex) => (
+                        <li key={bIndex} className="timeline-bullet">{bullet}</li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="timeline-subtitle">
-                    Publisher: {pub.publisher} &bull;{' '}
-                    <a 
-                      href={pub.doiLink} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="publication-doi inline-flex items-center gap-1"
-                      style={{ textDecoration: 'none' }}
-                    >
-                      <span>Zenodo DOI: {pub.doi}</span>
-                      <ExternalLink size={12} style={{ display: 'inline' }} />
-                    </a>
-                  </div>
-                  <ul className="timeline-bullets">
-                    {pub.bullets.map((bullet, bIndex) => (
-                      <li key={bIndex} className="timeline-bullet">{bullet}</li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Education Section */}
-        <section className="card">
-          <h2 className="section-title">
-            <GraduationCap className="section-title-icon" size={20} />
-            Education
-          </h2>
-          <div className="timeline">
-            {education.map((edu, index) => {
-              const highlighted = isHighlighted(edu.tags);
-              return (
-                <div key={index} className={`timeline-item ${highlighted ? 'highlighted' : ''}`}>
-                  <div className="timeline-dot" />
-                  <div className="timeline-header">
-                    <h3 className="timeline-title">{edu.institution}</h3>
-                    <span className="timeline-date">{edu.date}</span>
+        {resumeData.education && resumeData.education.length > 0 && (
+          <section className="card">
+            <h2 className="section-title">
+              <GraduationCap className="section-title-icon" size={20} />
+              Education
+            </h2>
+            <div className="timeline">
+              {resumeData.education.map((edu, index) => {
+                const highlighted = isHighlighted(edu.tags);
+                return (
+                  <div key={index} className={`timeline-item ${highlighted ? 'highlighted' : ''}`}>
+                    <div className="timeline-dot" />
+                    <div className="timeline-header">
+                      <h3 className="timeline-title">{edu.institution}</h3>
+                      <span className="timeline-date">{edu.date}</span>
+                    </div>
+                    <div className="timeline-subtitle">
+                      {edu.degree} &bull; {edu.location}
+                      {edu.gpa && <strong style={{ marginLeft: '0.5rem', color: 'var(--color-secondary)' }}>({edu.gpa})</strong>}
+                    </div>
                   </div>
-                  <div className="timeline-subtitle">
-                    {edu.degree} &bull; {edu.location}
-                    {edu.gpa && <strong style={{ marginLeft: '0.5rem', color: 'var(--color-secondary)' }}>({edu.gpa})</strong>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Achievements and Certifications Grid */}
         <div className="grid-two-cols">
           {/* Achievements Card */}
-          <section className="card">
-            <h2 className="section-title">
-              <Award className="section-title-icon" size={20} />
-              Achievements
-            </h2>
-            <ul className="simple-list">
-              {achievements.map((ach, index) => (
-                <li key={index} className="simple-list-item">
-                  <ChevronRight className="simple-list-icon" size={14} />
-                  <span>{ach}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {resumeData.achievements && resumeData.achievements.length > 0 && (
+            <section className="card">
+              <h2 className="section-title">
+                <Award className="section-title-icon" size={20} />
+                Achievements
+              </h2>
+              <ul className="simple-list">
+                {resumeData.achievements.map((ach, index) => (
+                  <li key={index} className="simple-list-item">
+                    <ChevronRight className="simple-list-icon" size={14} />
+                    <span>{ach}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {/* Certifications Card */}
-          <section className="card">
-            <h2 className="section-title">
-              <Award className="section-title-icon" size={20} />
-              Certifications
-            </h2>
-            <ul className="simple-list">
-              {certifications.map((cert, index) => (
-                <li key={index} className="simple-list-item">
-                  <ChevronRight className="simple-list-icon" size={14} />
-                  <span>{cert}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {resumeData.certifications && resumeData.certifications.length > 0 && (
+            <section className="card">
+              <h2 className="section-title">
+                <Award className="section-title-icon" size={20} />
+                Certifications
+              </h2>
+              <ul className="simple-list">
+                {resumeData.certifications.map((cert, index) => (
+                  <li key={index} className="simple-list-item">
+                    <ChevronRight className="simple-list-icon" size={14} />
+                    <span>{cert}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
       </main>
+
+      {/* Admin Panel Trigger */}
+      <button 
+        onClick={() => setIsAdminModalOpen(true)}
+        className="admin-trigger-btn"
+        title="Admin CV Editor"
+      >
+        <Lock size={16} />
+      </button>
+
+      {/* Admin Modal */}
+      {isAdminModalOpen && (
+        <div className="modal-overlay" onClick={() => { setIsAdminModalOpen(false); setIsAuthorized(false); setPasskeyInput(""); }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Interactive CV Editor</h2>
+              <button 
+                onClick={() => { setIsAdminModalOpen(false); setIsAuthorized(false); setPasskeyInput(""); }} 
+                className="copy-btn" 
+                style={{ opacity: 1, padding: '4px' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              {!isAuthorized ? (
+                <div className="form-group" style={{ padding: '1rem 0' }}>
+                  <label className="form-label" style={{ marginBottom: '0.5rem' }}>Enter Admin Passkey</label>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input 
+                      type="password" 
+                      value={passkeyInput}
+                      onChange={(e) => setPasskeyInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleVerifyPasskey()}
+                      placeholder="••••••••" 
+                      className="form-input"
+                      style={{ flex: 1 }}
+                    />
+                    <button onClick={handleVerifyPasskey} className="btn btn-primary">
+                      Verify
+                    </button>
+                  </div>
+                  {authError && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem' }}>Incorrect passkey. Please try again.</span>}
+                </div>
+              ) : (
+                <>
+                  <div className="form-group">
+                    <label className="form-label">Edit CV JSON Configuration</label>
+                    <p className="text-secondary" style={{ fontSize: '0.75rem', marginBottom: '0.5rem' }}>
+                      Modify fields directly. Changes update instantly upon saving.
+                    </p>
+                    <textarea 
+                      value={jsonInput}
+                      onChange={(e) => setJsonInput(e.target.value)}
+                      className="form-textarea"
+                      spellCheck="false"
+                    />
+                  </div>
+                  {jsonError && <div className="error-banner">{jsonError}</div>}
+                </>
+              )}
+            </div>
+
+            {isAuthorized && (
+              <div className="modal-footer">
+                <button onClick={handleResetData} className="btn btn-secondary" style={{ marginRight: 'auto', borderColor: '#ef4444', color: '#ef4444' }}>
+                  Reset Default
+                </button>
+                <button onClick={handleExportData} className="btn btn-secondary">
+                  Export JSON
+                </button>
+                <button onClick={handleSaveData} className="btn btn-primary">
+                  Update Resume
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
