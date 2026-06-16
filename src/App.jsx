@@ -425,21 +425,11 @@ export default function App() {
             <Award className="section-title-icon" size={20} />
             Professional Summary
           </h2>
-          <div className="summary-text" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <p>
-              I am a freshman at IIT Madras (BS Data Science) and B.Tech CSE (Honors) student at KL University, passionate about using AI and data analysis to create impactful tech solutions. I currently serve as Campus Ambassador for Techfest IIT Bombay (AIR 6), Associate Director -- Research & Discovery (VEDA @ KL University), and Core Research Member (RaSoR, IITM).
-            </p>
-            <p>
-              I’m also building Eventorin, a startup to reimagine event experiences using data-driven insights.
-            </p>
-            <p>
-              <strong>Interests:</strong> Machine Learning, EMG-based Assistive Tech, Research, Tech Evangelism, Techno Optimism.
-            </p>
-            <p>
-              Open to collaborations, internships, and impactful projects in AI/data. Let’s connect!
-            </p>
-          </div>
+          <p className="summary-text">
+            Freshman at IIT Madras (BS Data Science) and B.Tech CSE (Honors) student at KL University with interests in AI, Machine Learning, Data Science, and Research. Currently serving as Research Assistant at iSRL (IITM), Core Research Member at RaSoR, and Associate Director -- Research & Discovery at KL-VEDA. Strong communication, coordination, leadership, and organizational skills with experience in research collaborations, student initiatives, and technical projects, CEFR B2 English Proficiency.
+          </p>
         </section>
+
 
         {/* Experience Section */}
         <section className="card">
