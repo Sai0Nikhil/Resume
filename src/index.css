@@ -786,11 +786,18 @@ body {
 
   .sidebar-sticky {
     position: static !important;
+    display: flex !important;
+    flex-direction: row-reverse !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 1.5rem !important;
+    width: 100% !important;
   }
 
   .floating-actions,
   .filter-banner,
   .skills-container,
+  .languages-card, /* Hide languages card from print just like skills */
   .copy-btn {
     display: none !important;
   }
@@ -805,11 +812,20 @@ body {
     -webkit-backdrop-filter: none !important;
     overflow: visible !important;
     border-radius: 0 !important;
+    flex: 1 !important;
   }
 
   .avatar-container {
-    display: none !important;
+    display: block !important;
+    width: 1.05in !important;
+    height: 1.25in !important;
+    border-radius: 4px !important;
+    border: 1px solid #dddddd !important;
+    flex-shrink: 0 !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
   }
+
 
   .profile-name {
     font-size: 26pt !important;

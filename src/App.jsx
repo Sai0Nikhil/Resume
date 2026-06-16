@@ -456,8 +456,9 @@ export default function App() {
 
           {/* Languages Card */}
           {resumeData.languages && resumeData.languages.length > 0 && (
-            <div className="card">
+            <div className="card languages-card">
               <h3 className="skill-category-title" style={{ marginBottom: '0.75rem' }}>Languages</h3>
+
               <ul className="simple-list" style={{ gap: '0.5rem' }}>
                 {resumeData.languages.map((lang, index) => (
                   <li key={index} className="simple-list-item" style={{ fontSize: '0.85rem' }}>
