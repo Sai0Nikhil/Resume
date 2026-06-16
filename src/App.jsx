@@ -111,16 +111,6 @@ export default function App() {
       tags: ["Python", "Data Science", "Research", "iSRL"]
     },
     {
-      role: "Co-Founder",
-      company: "DockMeet",
-      location: "Remote",
-      date: "Feb 2026 -- Present",
-      bullets: [
-        "Building an Activity centric social networking platform !!"
-      ],
-      tags: ["React", "Mongodb", "Startup", "Leadership"]
-    },
-    {
       role: "Member",
       company: "Google Developers Group",
       location: "KL University",
@@ -153,18 +143,17 @@ export default function App() {
       tags: ["Algorithms", "Research", "Technical Writing"]
     },
     {
-      role: "Data Science Intern",
-      company: "Corizo (Wipro-Associated Virtual Program)",
+      role: "Co-Founder",
+      company: "DockMeet",
       location: "Remote",
-      date: "July 2025 -- Sept 2025",
+      date: "Feb 2026 -- Present",
       bullets: [
-        "Currently engaged in a virtual internship in Data Science, orchestrated by Corizo in collaboration with Wipro",
-        "Embarking on a rigorous initiation into Python programming, with a focus on data-centric libraries such as Pandas and NumPy",
-        "Exploring foundational paradigms of computational logic, including conditional structures, iterative mechanisms, and elementary data manipulation techniques"
+        "Building an Activity centric social networking platform !!"
       ],
-      tags: ["Python", "Data Science", "Pandas", "NumPy"]
+      tags: ["React", "Mongodb", "Startup", "Leadership"]
     }
   ];
+
 
   // Projects Data
   const projects = [
